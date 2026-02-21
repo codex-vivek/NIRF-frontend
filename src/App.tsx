@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { predictStatic } from './utils/predictionEngine';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
@@ -10,9 +10,7 @@ import {
   ShieldCheck, Activity, BarChart3, Info
 } from 'lucide-react';
 
-const API_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-  ? "http://localhost:8000" 
-  : "https://your-backend-service.onrender.com");
+
 
 interface PredictionResult {
   predicted_score: number;
@@ -42,12 +40,14 @@ function App() {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post(`${API_URL}/predict`, inputs);
+      // Small artificial delay to simulate analysis and show loading state
+      await new Promise(resolve => setTimeout(resolve, 800));
+      const data = await predictStatic(inputs);
       setResult(data);
       setView('report');
     } catch (err) {
       console.error(err);
-      alert("Failed to fetch prediction. Ensure backend is running.");
+      alert("Failed to process prediction.");
     } finally {
       setLoading(false);
     }
@@ -79,9 +79,6 @@ function App() {
                 <BrainCircuit size={14} />
                 POWERED BY SUPERVISED MACHINE LEARNING
               </div>
-              <div className="text-[10px] text-blue-400 font-bold tracking-[0.3em] mt-2 opacity-80 uppercase">
-                CODE BY VIVEK AI
-              </div>
             </div>
             <h1>NIRF Rank AI Predictor</h1>
             <p className="subtitle">
@@ -95,8 +92,9 @@ function App() {
                   <label>Institution Name</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Graphic Era Global University" 
+                    placeholder="Enter Institution Name" 
                     value={institutionName}
+
                     onChange={(e) => setInstitutionName(e.target.value)}
                     required
                   />
@@ -292,10 +290,8 @@ function App() {
 function Header({ result, name }: { result: PredictionResult | null, name: string }) {
   return (
     <div className="report-header-card">
-      <div className="text-[10px] text-blue-400 font-bold tracking-[0.4em] mb-4 opacity-70">
-        CODE BY VIVEK AI
-      </div>
       <div className="rank-title">Probable NIRF Rank Range</div>
+
       {result && (
         <>
           <motion.div 

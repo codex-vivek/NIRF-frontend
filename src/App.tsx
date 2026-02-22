@@ -26,11 +26,11 @@ function App() {
   const [category, setCategory] = useState('University');
   
   const [inputs, setInputs] = useState({
-    TLR: 60,
-    RPC: 40,
-    GO: 70,
-    OI: 55,
-    PR: 20
+    TLR: 0,
+    RPC: 0,
+    GO: 0,
+    OI: 0,
+    PR: 0
   });
 
   const [loading, setLoading] = useState(false);
@@ -82,7 +82,7 @@ function App() {
             </div>
             <h1>NIRF Rank AI Predictor</h1>
             <p className="subtitle">
-              Advanced predictive analytics for first-time applicants. Get data-driven insights based on historical institutional metrics.
+              Developed by the Dept.of Computer Science and Engineering, KMCLU.
             </p>
 
             <form onSubmit={handlePredict} className="glass-card">
@@ -128,6 +128,7 @@ function App() {
                       max="100" 
                       value={val}
                       onChange={(e) => setInputs(prev => ({ ...prev, [key]: Number(e.target.value) }))}
+                      onFocus={(e) => e.target.select()}
                       required
                     />
                   </div>
